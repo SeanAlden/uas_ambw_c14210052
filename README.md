@@ -1,16 +1,57 @@
-# uas_ambw_c14210052
+# SA TodoListApp
 
-A new Flutter project.
+Aplikasi **SA TodoListApp** adalah aplikasi to-do list yang memudahkan pengguna dalam mencatat, menyelesaikan, dan mengarsipkan aktivitas harian mereka.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## ✨ Fitur Aplikasi
 
-A few resources to get you started if this is your first Flutter project:
+Fitur-fitur utama yang tersedia dalam aplikasi ini:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- 🔐 **Autentikasi Pengguna**  
+  Pengguna dapat melakukan:
+  - Register
+  - Login
+  - Logout
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- 🚀 **Halaman Get Started**  
+  Tampil saat pertama kali aplikasi dibuka untuk memperkenalkan aplikasi.
+
+- ✅ **CRUD Todo List**  
+  - Menambahkan, mengedit, dan menghapus aktivitas.
+  - Checklist kegiatan yang telah selesai.
+  - Arsipkan kegiatan yang ingin disimpan sebagai riwayat.
+
+---
+
+## 🛠️ Langkah Install dan Build
+
+1. Buka terminal pada root proyek.
+2. Jalankan perintah berikut untuk build aplikasi: flutter build apk
+3. Setelah build selesai, akan muncul output "√ Built build\app\outputs\flutter-apk\app-release.apk" yang menandakan file APK berhasil dibuat dan tersimpan pada path tersebut.
+4. Bagikan file APK (misalnya melalui WhatsApp) untuk menginstall aplikasi di HP.
+5. Setelah terinstall, jalankan aplikasi di perangkat HP Anda.
+
+---
+
+## 💻 Teknologi yang Digunakan
+
+- 🔧 **Supabase**  
+Digunakan untuk proses autentikasi user dan penyimpanan data to-do list.
+
+- 🐝 **Hive**  
+Digunakan untuk menyimpan status apakah halaman get started sudah pernah dibuka.
+
+- 📦 **SharedPreferences**  
+Menyimpan sesi login pengguna agar tetap login saat aplikasi dibuka kembali.
+
+---
+
+## 🧪 Dummy User untuk Uji Coba Login
+
+Gunakan akun berikut untuk mencoba login ke dalam aplikasi:
+
+- **Email:** `test@gmail.com`  
+- **Password:** `testuasambw123`
+
+---
