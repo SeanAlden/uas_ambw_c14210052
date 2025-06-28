@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_ambw_c14210052/views/auth/login_screen.dart';
@@ -13,6 +14,9 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+
+  final _usernameController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -52,6 +56,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
+    _usernameController.dispose();
+    _phoneController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -94,6 +100,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 key: _formKey,
                 child: Column(
                   children: [
+                    TextFormField(
+                      controller: _usernameController,
+                      decoration: _buildInputDecoration(
+                        context,
+                        label: 'Username',
+                        icon: Icons.person_outline,
+                      ),
+                      keyboardType: TextInputType.text,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Username tidak boleh kosong';
+                        }
+                        if (value.length < 4) {
+                          return 'Username minimal 4 karakter';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _phoneController,
+                      decoration: _buildInputDecoration(
+                        context,
+                        label: 'Nomor Telepon',
+                        icon: Icons.phone_outlined,
+                      ),
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Nomor telepon tidak boleh kosong';
+                        }
+                        if (value.length < 10) {
+                          return 'Nomor telepon tidak valid';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
                     TextFormField(
                       controller: _emailController,
                       decoration: _buildInputDecoration(
@@ -196,12 +241,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 : () {
                                     if (_formKey.currentState!.validate()) {
                                       authController.signUp(
+                                        username:
+                                            _usernameController.text.trim(),
+                                        phoneNumber:
+                                            _phoneController.text.trim(),
                                         email: _emailController.text.trim(),
                                         password:
                                             _passwordController.text.trim(),
-                                        confirmPassword:
-                                            _confirmPasswordController.text
-                                                .trim(),
                                       );
                                     }
                                   },

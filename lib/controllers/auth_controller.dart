@@ -55,11 +55,15 @@ class AuthController extends GetxController {
   }
 
   Future<void> signUp({
+    required String username,
+    required String phoneNumber,
     required String email,
     required String password,
-    required String confirmPassword,
   }) async {
-    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+    if (username.isEmpty ||
+        phoneNumber.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty) {
       Get.snackbar(
         "Validasi Gagal",
         "Semua field wajib diisi.",
@@ -69,59 +73,39 @@ class AuthController extends GetxController {
       return;
     }
 
-    if (!GetUtils.isEmail(email)) {
-      Get.snackbar(
-        "Email Tidak Valid",
-        "Masukkan email yang benar.",
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
-      return;
-    }
-
-    if (password.length < 6) {
-      Get.snackbar(
-        "Password Terlalu Pendek",
-        "Password minimal 6 karakter.",
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
-      return;
-    }
-
-    if (password != confirmPassword) {
-      Get.snackbar(
-        "Password Tidak Cocok",
-        "Konfirmasi password tidak sesuai.",
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
-      return;
-    }
-
     isLoading.value = true;
 
     try {
-      final result = await supabase.auth.signUp(
+      final authResult = await supabase.auth.signUp(
         email: email.trim(),
         password: password.trim(),
+        data: {
+          'username': username.trim(),
+        },
       );
 
-      final session = result.session;
+      if (authResult.user != null) {
+        await supabase.from('users').insert({
+          'auth_id': authResult.user!.id,
+          'username': username.trim(),
+          'phone_number': phoneNumber.trim(),
+          'email': email.trim(),
+        });
 
-      if (result.user != null) {
+        final session = authResult.session;
         if (session != null) {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setBool('isLoggedIn', true);
           await prefs.setString('refreshToken', session.refreshToken ?? '');
-          await prefs.setString('userEmail', result.user?.email ?? '');
+          await prefs.setString('userEmail', authResult.user?.email ?? '');
           Get.offAll(() => const HomeScreen());
         } else {
           Get.snackbar(
             'Registrasi Berhasil',
-            'Silakan cek email untuk konfirmasi.',
+            'Silakan cek email Anda untuk verifikasi akun.',
             backgroundColor: Colors.green,
             colorText: Colors.white,
+            duration: const Duration(seconds: 5),
           );
           Get.offAll(() => const LoginScreen());
         }
@@ -133,10 +117,10 @@ class AuthController extends GetxController {
         backgroundColor: Colors.redAccent,
         colorText: Colors.white,
       );
-    } catch (_) {
+    } catch (e) {
       Get.snackbar(
         "Error",
-        "Terjadi kesalahan tak terduga.",
+        "Terjadi kesalahan: ${e.toString()}",
         backgroundColor: Colors.redAccent,
         colorText: Colors.white,
       );

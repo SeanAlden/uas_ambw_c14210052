@@ -6,18 +6,39 @@ import 'package:uas_ambw_c14210052/views/app/add_todo_screen.dart';
 import 'package:uas_ambw_c14210052/views/app/archived_screen.dart';
 import 'package:uas_ambw_c14210052/controllers/auth_controller.dart';
 import 'package:uas_ambw_c14210052/controllers/todo_controller.dart';
+import 'package:uas_ambw_c14210052/views/app/profile_screen.dart';
 import 'package:uas_ambw_c14210052/views/app/removed_screen.dart';
 import 'package:uas_ambw_c14210052/views/app/todo_detail_screen.dart';
 import 'package:uas_ambw_c14210052/models/todo_model.dart';
+import 'package:uas_ambw_c14210052/controllers/profile_controller.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final FocusNode _searchFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    Get.put(ProfileController());
+  }
+
+  @override
+  void dispose() {
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(TodoController());
     final controller2 = Get.put(AuthController());
-
+    final profileController = Get.find<ProfileController>();
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
@@ -29,6 +50,30 @@ class HomeScreen extends StatelessWidget {
               fontWeight: FontWeight.bold, color: colorScheme.onPrimary),
         ),
         actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Obx(() {
+              final imageUrl = profileController.avatarUrl.value;
+              return GestureDetector(
+                onTap: () {
+                  Get.to(() => const ProfileScreen());
+                },
+                child: CircleAvatar(
+                  radius: 18,
+                  backgroundColor: colorScheme.primaryContainer,
+                  backgroundImage:
+                      imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
+                  child: imageUrl.isEmpty
+                      ? Icon(
+                          Icons.person,
+                          size: 22,
+                          color: colorScheme.onPrimaryContainer,
+                        )
+                      : null,
+                ),
+              );
+            }),
+          ),
           IconButton(
             onPressed: controller2.signOut,
             icon: Icon(Icons.logout, color: colorScheme.onPrimary),
@@ -41,6 +86,7 @@ class HomeScreen extends StatelessWidget {
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: TextField(
+              focusNode: _searchFocusNode,
               onChanged: (val) => controller.searchQuery.value = val,
               decoration: InputDecoration(
                 hintText: 'Cari tugas...',
@@ -68,8 +114,22 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.person_pin,
-                      color: colorScheme.onPrimary, size: 50),
+                  Obx(() {
+                    final imageUrl = profileController.avatarUrl.value;
+                    return CircleAvatar(
+                      radius: 25,
+                      backgroundColor: colorScheme.onPrimary.withOpacity(0.9),
+                      backgroundImage:
+                          imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
+                      child: imageUrl.isEmpty
+                          ? Icon(
+                              Icons.person_pin,
+                              size: 30,
+                              color: colorScheme.primary,
+                            )
+                          : null,
+                    );
+                  }),
                   const SizedBox(height: 10),
                   Text(
                     'Daily Planner',
@@ -78,11 +138,13 @@ class HomeScreen extends StatelessWidget {
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
                   ),
-                  Text(
-                    controller.userEmail.value,
-                    style: GoogleFonts.poppins(
-                        color: colorScheme.onPrimary.withOpacity(0.7)),
-                  ),
+                  Obx(
+                    () => Text(
+                      controller.userEmail.value,
+                      style: GoogleFonts.poppins(
+                          color: colorScheme.onPrimary.withOpacity(0.7)),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -114,66 +176,97 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: Obx(() {
-        final grouped = controller.groupedTodos;
-        if (grouped.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.check_circle_outline,
-                    size: 80, color: Colors.grey),
-                const SizedBox(height: 16),
-                Text('Tidak ada tugas',
-                    style:
-                        GoogleFonts.poppins(fontSize: 18, color: Colors.grey)),
-                Text(
-                  controller.searchQuery.isNotEmpty
-                      ? 'Tidak ada hasil untuk "${controller.searchQuery}"'
-                      : 'Tekan tombol + untuk menambah tugas baru.',
-                  style: GoogleFonts.poppins(color: Colors.grey),
-                ),
-              ],
-            ),
-          );
-        }
-
-        return ListView(
-          children: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-              child: Text(
-                'Hello, ${controller.userEmail} 👋',
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: colorScheme.primary,
-                ),
+      body: GestureDetector(
+        onTap: () {
+          _searchFocusNode.unfocus();
+        },
+        child: Obx(() {
+          final grouped = controller.groupedTodos;
+          if (grouped.isEmpty && controller.searchQuery.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.check_circle_outline,
+                      size: 80, color: Colors.grey),
+                  const SizedBox(height: 16),
+                  Text('Tidak ada tugas',
+                      style: GoogleFonts.poppins(
+                          fontSize: 18, color: Colors.grey)),
+                  Text(
+                    'Tekan tombol + untuk menambah tugas baru.',
+                    style: GoogleFonts.poppins(color: Colors.grey),
+                  ),
+                ],
               ),
-            ),
-            ...grouped.entries.expand((entry) {
-              final key = entry.key;
-              final todos = entry.value;
-              return [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                  child: Text(
-                    key,
+            );
+          }
+          if (grouped.isEmpty && controller.searchQuery.isNotEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.search_off, size: 80, color: Colors.grey),
+                  const SizedBox(height: 16),
+                  Text('Tugas Tidak Ditemukan',
+                      style: GoogleFonts.poppins(
+                          fontSize: 18, color: Colors.grey)),
+                  Text(
+                    'Tidak ada hasil untuk "${controller.searchQuery.value}"',
+                    style: GoogleFonts.poppins(color: Colors.grey),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 12.0),
+                child: Obx(() {
+                  final username =
+                      profileController.userProfile.value?.username;
+
+                  final greetingName = username != null && username.isNotEmpty
+                      ? username
+                      : 'User';
+
+                  return Text(
+                    'Hello, $greetingName 👋',
                     style: GoogleFonts.poppins(
                       fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       color: colorScheme.primary,
                     ),
+                  );
+                }),
+              ),
+              ...grouped.entries.expand((entry) {
+                final key = entry.key;
+                final todos = entry.value;
+                return [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    child: Text(
+                      key,
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.primary,
+                      ),
+                    ),
                   ),
-                ),
-                ...todos
-                    .map((todo) => _buildTodoItem(todo, controller, context)),
-              ];
-            }),
-          ],
-        );
-      }),
+                  ...todos
+                      .map((todo) => _buildTodoItem(todo, controller, context)),
+                ];
+              }),
+            ],
+          );
+        }),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final result = await Get.to(() => const AddTodoScreen());
@@ -199,7 +292,7 @@ class HomeScreen extends StatelessWidget {
       elevation: 2,
       color: todo.isCompleted
           ? (isDark ? Colors.grey.shade800 : Colors.grey.shade200)
-          : colorScheme.surfaceVariant,
+          : colorScheme.surfaceVariant.withOpacity(0.5),
       child: ListTile(
         onTap: () {
           Get.to(() => TodoDetailScreen(todo: todo));
@@ -263,6 +356,11 @@ class HomeScreen extends StatelessWidget {
                 }
               },
             ),
+            IconButton(
+                icon: Icon(Icons.archive_outlined, color: Colors.green),
+                onPressed: () async {
+                  await controller.archiveTodo(todo);
+                }),
             IconButton(
               icon: Icon(Icons.delete, color: colorScheme.error),
               onPressed: () async {
