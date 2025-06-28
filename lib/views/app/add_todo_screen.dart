@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_ambw_c14210052/controllers/todo_controller.dart';
-import 'package:uas_ambw_c14210052/models/todo_model.dart';
+import 'package:uas_ambw_c14210052/models/todo.dart';
 
 class AddTodoScreen extends StatelessWidget {
   final Todo? todo;

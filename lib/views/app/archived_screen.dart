@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_ambw_c14210052/controllers/todo_controller.dart';
 import 'package:uas_ambw_c14210052/views/app/todo_detail_screen.dart';
-import 'package:uas_ambw_c14210052/models/todo_model.dart';
+import 'package:uas_ambw_c14210052/models/todo.dart';
 
 class ArchiveScreen extends StatelessWidget {
   const ArchiveScreen({super.key});

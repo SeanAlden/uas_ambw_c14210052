@@ -9,7 +9,7 @@ import 'package:uas_ambw_c14210052/controllers/todo_controller.dart';
 import 'package:uas_ambw_c14210052/views/app/profile_screen.dart';
 import 'package:uas_ambw_c14210052/views/app/removed_screen.dart';
 import 'package:uas_ambw_c14210052/views/app/todo_detail_screen.dart';
-import 'package:uas_ambw_c14210052/models/todo_model.dart';
+import 'package:uas_ambw_c14210052/models/todo.dart';
 import 'package:uas_ambw_c14210052/controllers/profile_controller.dart';
 
 class HomeScreen extends StatefulWidget {

@@ -1,4 +1,4 @@
-class UserModel {
+class User {
   final String id;
   final String authId;
   final String username;
@@ -7,7 +7,7 @@ class UserModel {
   final DateTime createdAt;
   final String? avatarPath;
 
-  UserModel({
+  User({
     required this.id,
     required this.authId,
     required this.username,
@@ -17,8 +17,8 @@ class UserModel {
     this.avatarPath,
   });
 
-  factory UserModel.fromMap(Map<String, dynamic> map) {
-    return UserModel(
+  factory User.fromMap(Map<String, dynamic> map) {
+    return User(
         id: map['id'] as String,
         authId: map['auth_id'] as String,
         username: map['username'] as String,
@@ -42,12 +42,12 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, authId: $authId, username: $username, phoneNumber: $phoneNumber, email: $email, createdAt: $createdAt, avatarPath: $avatarPath)';
+    return 'User(id: $id, authId: $authId, username: $username, phoneNumber: $phoneNumber, email: $email, createdAt: $createdAt, avatarPath: $avatarPath)';
   }
 }
 
-extension UserModelCopyWith on UserModel {
-  UserModel copyWith({
+extension UserCopyWith on User {
+  User copyWith({
     String? id,
     String? authId,
     String? username,
@@ -56,7 +56,7 @@ extension UserModelCopyWith on UserModel {
     DateTime? createdAt,
     String? avatarPath,
   }) {
-    return UserModel(
+    return User(
       id: id ?? this.id,
       authId: authId ?? this.authId,
       username: username ?? this.username,

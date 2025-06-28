@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uas_ambw_c14210052/main.dart';
-import 'package:uas_ambw_c14210052/models/todo_model.dart';
+import 'package:uas_ambw_c14210052/models/todo.dart';
 
 class TodoController extends GetxController {
   RxString userEmail = 'User'.obs;
