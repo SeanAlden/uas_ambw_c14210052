@@ -4,27 +4,28 @@ Aplikasi **SA TodoListApp** adalah aplikasi to-do list yang memudahkan pengguna 
 
 ---
 
-## ✨ Fitur Aplikasi
+## Fitur Aplikasi
 
 Fitur-fitur utama yang tersedia dalam aplikasi ini:
 
-- 🔐 **Autentikasi Pengguna**  
+- **Autentikasi Pengguna**  
   Pengguna dapat melakukan:
   - Register
   - Login
   - Logout
+  - Update status profil (seperti nama, nomor telepon, gambar profil dan password)
 
-- 🚀 **Halaman Get Started**  
+- **Halaman Get Started**  
   Tampil saat pertama kali aplikasi dibuka untuk memperkenalkan aplikasi.
 
-- ✅ **CRUD Todo List**  
+- **CRUD Todo List**  
   - Menambahkan, mengedit, dan menghapus aktivitas.
   - Checklist kegiatan yang telah selesai.
   - Arsipkan kegiatan yang ingin disimpan sebagai riwayat.
 
 ---
 
-## 🛠️ Langkah Install dan Build
+## Langkah Install dan Build
 
 1. Buka terminal pada root proyek.
 2. Jalankan perintah berikut untuk build aplikasi: flutter build apk
@@ -34,20 +35,23 @@ Fitur-fitur utama yang tersedia dalam aplikasi ini:
 
 ---
 
-## 💻 Teknologi yang Digunakan
+## Teknologi yang Digunakan
 
-- 🔧 **Supabase**  
+- **Supabase**  
 Digunakan untuk proses autentikasi user dan penyimpanan data to-do list.
 
-- 🐝 **Hive**  
+- **Hive**  
 Digunakan untuk menyimpan status apakah halaman get started sudah pernah dibuka.
 
-- 📦 **SharedPreferences**  
+- **SharedPreferences**  
 Menyimpan sesi login pengguna agar tetap login saat aplikasi dibuka kembali.
+
+- **getX**
+Digunakan untuk mengatur alur logika backend dan UI frontend pada aplikasi
 
 ---
 
-## 🧪 Dummy User untuk Uji Coba Login
+## Dummy User untuk Uji Coba Login
 
 Gunakan akun berikut untuk mencoba login ke dalam aplikasi:
 

@@ -14,14 +14,17 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final ProfileController controller = Get.find();
 
+  final _currentPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
+  bool _obscureCurrent = true;
   bool _obscureNew = true;
   bool _obscureConfirm = true;
 
   @override
   void dispose() {
+    _currentPasswordController.dispose();
     _newPasswordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
@@ -29,7 +32,10 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
 
   void _onSavePassword() {
     if (_formKey.currentState!.validate()) {
-      controller.updatePassword(_newPasswordController.text.trim());
+      controller.updatePassword(
+        currentPassword: _currentPasswordController.text.trim(),
+        newPassword: _newPasswordController.text.trim(),
+      );
     }
   }
 
@@ -67,6 +73,30 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
               ),
               const SizedBox(height: 32),
               TextFormField(
+                controller: _currentPasswordController,
+                obscureText: _obscureCurrent,
+                decoration: _buildInputDecoration(
+                  context,
+                  label: 'Password Saat Ini',
+                  icon: Icons.password,
+                ).copyWith(
+                  suffixIcon: IconButton(
+                    icon: Icon(_obscureCurrent
+                        ? Icons.visibility
+                        : Icons.visibility_off),
+                    onPressed: () =>
+                        setState(() => _obscureCurrent = !_obscureCurrent),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Password saat ini tidak boleh kosong';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
                 controller: _newPasswordController,
                 obscureText: _obscureNew,
                 decoration: _buildInputDecoration(
@@ -75,7 +105,8 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                   icon: Icons.lock_outline,
                 ).copyWith(
                   suffixIcon: IconButton(
-                    icon: Icon(_obscureNew ? Icons.visibility : Icons.visibility_off),
+                    icon: Icon(
+                        _obscureNew ? Icons.visibility : Icons.visibility_off),
                     onPressed: () => setState(() => _obscureNew = !_obscureNew),
                   ),
                 ),
@@ -99,8 +130,11 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                   icon: Icons.lock_person_outlined,
                 ).copyWith(
                   suffixIcon: IconButton(
-                    icon: Icon(_obscureConfirm ? Icons.visibility : Icons.visibility_off),
-                    onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
+                    icon: Icon(_obscureConfirm
+                        ? Icons.visibility
+                        : Icons.visibility_off),
+                    onPressed: () =>
+                        setState(() => _obscureConfirm = !_obscureConfirm),
                   ),
                 ),
                 validator: (value) {
@@ -113,7 +147,8 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
               const SizedBox(height: 40),
               Obx(
                 () => ElevatedButton.icon(
-                  onPressed: controller.isLoading.value ? null : _onSavePassword,
+                  onPressed:
+                      controller.isLoading.value ? null : _onSavePassword,
                   icon: controller.isLoading.value
                       ? Container(
                           width: 24,
@@ -124,7 +159,9 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                         )
                       : const Icon(Icons.save),
                   label: Text(
-                    controller.isLoading.value ? 'Menyimpan...' : 'Ganti Password',
+                    controller.isLoading.value
+                        ? 'Menyimpan...'
+                        : 'Ganti Password',
                     style: GoogleFonts.poppins(
                         fontSize: 16, fontWeight: FontWeight.bold),
                   ),
